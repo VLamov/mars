@@ -1,7 +1,8 @@
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy
-from django.db import models
 from datetime import datetime
+
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.translation import gettext_lazy
 
 
 class Device(models.Model):
@@ -44,8 +45,8 @@ class DeviceInField(models.Model):
         verbose_name_plural = "Оборудование в полях"
 
     serial_number = models.TextField(verbose_name="Серийный номер")
-    customer_id = models.ForeignKey(Customer, on_delete=models.RESTRICT, verbose_name="Идентификатор пользователя")
-    analyzer_id = models.ForeignKey(Device, on_delete=models.RESTRICT, verbose_name="Идентификатор оборудования")
+    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT, verbose_name="Идентификатор пользователя")
+    analyzer = models.ForeignKey(Device, on_delete=models.RESTRICT, verbose_name="Идентификатор оборудования")
     owner_status = models.TextField(verbose_name="Статус принадлежности")
 
     def __str__(self):
@@ -69,7 +70,7 @@ class Order(models.Model):
         verbose_name_plural = "Заявки"
 
     device = models.ForeignKey(DeviceInField, verbose_name="Оборудование", on_delete=models.RESTRICT)
-    customer_id = models.ForeignKey(Customer, verbose_name="Конечный пользователь", on_delete=models.RESTRICT)
+    customer = models.ForeignKey(Customer, verbose_name="Конечный пользователь", on_delete=models.RESTRICT)
     order_description = models.TextField(verbose_name="Описание")
     created_dt = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
     last_updated_dt = models.DateTimeField(verbose_name="Последнее изменение", blank=True, null=True)

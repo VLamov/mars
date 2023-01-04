@@ -13,11 +13,11 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 class DevicesInFieldAdmin(admin.ModelAdmin):
-    list_display = ('id', 'serial_number', 'customer_id', 'analyzer_id', 'owner_status')
+    list_display = ('id', 'serial_number', 'customer', 'analyzer', 'owner_status')
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'device', 'customer_id', 'order_description', 'created_dt', 'last_updated_dt', 'order_status')
+    list_display = ('id', 'device', 'customer', 'order_description', 'created_dt', 'last_updated_dt', 'order_status')
 
 
 admin.site.register(Device, DeviceAdmin)
