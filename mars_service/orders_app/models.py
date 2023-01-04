@@ -18,10 +18,11 @@ class Device(models.Model):
     def __str__(self):
         return f"{self.manufacturer} {self.model}"
 
+
 class Customer(models.Model):
     """Конечные пользователи оборудования"""
 
-    class  Meta:
+    class Meta:
         db_table = "customers"
         verbose_name = "Описание контрагента"
         verbose_name_plural = "Описание контрагентов"
@@ -32,6 +33,7 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.customer_name
+
 
 class DeviceInField(models.Model):
     """Оборудование в полях"""
@@ -44,10 +46,11 @@ class DeviceInField(models.Model):
     serial_number = models.TextField(verbose_name="Серийный номер")
     customer_id = models.ForeignKey(Customer, on_delete=models.RESTRICT, verbose_name="Идентификатор пользователя")
     analyzer_id = models.ForeignKey(Device, on_delete=models.RESTRICT, verbose_name="Идентификатор оборудования")
-    order_status = models.TextField(verbose_name="Статус принадлежности")
+    owner_status = models.TextField(verbose_name="Статус принадлежности")
 
     def __str__(self):
         return f"{self.serial_number} {self.analyzer_id}"
+
 
 def status_validator(order_status):
     if order_status not in ["open", "closed", "in progress", "need info"]:
@@ -55,6 +58,7 @@ def status_validator(order_status):
             gettext_lazy('%(order_status)s is wrong status'),
             params={'order_status': order_status},
         )
+
 
 class Order(models.Model):
     """Класс для описания заявки"""
