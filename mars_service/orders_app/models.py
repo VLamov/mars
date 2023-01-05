@@ -50,7 +50,7 @@ class DeviceInField(models.Model):
     owner_status = models.TextField(verbose_name="Статус принадлежности")
 
     def __str__(self):
-        return f"{self.serial_number} {self.analyzer_id}"
+        return f"{self.serial_number} {self.analyzer}"
 
 
 def status_validator(order_status):
@@ -75,6 +75,9 @@ class Order(models.Model):
     created_dt = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
     last_updated_dt = models.DateTimeField(verbose_name="Последнее изменение", blank=True, null=True)
     order_status = models.TextField(verbose_name="Статус заявки", validators=[status_validator])
+
+    def __str__(self):
+        return f"Заявка №{self.id} для {self.device}"
 
     def save(self, *args, **kwargs):
         self.last_updated_dt = datetime.now()
