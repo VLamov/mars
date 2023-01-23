@@ -1,8 +1,6 @@
 from datetime import datetime
 
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import gettext_lazy
 
 
 class Device(models.Model):
@@ -33,7 +31,7 @@ class Customer(models.Model):
     customer_city = models.TextField(verbose_name="Город")
 
     def __str__(self):
-        return self.customer_name
+        return f"{self.customer_name} по адресу {self.customer_address}"
 
 
 class DeviceInField(models.Model):
@@ -50,15 +48,7 @@ class DeviceInField(models.Model):
     owner_status = models.TextField(verbose_name="Статус принадлежности")
 
     def __str__(self):
-        return f"{self.serial_number} {self.analyzer}"
-
-
-def status_validator(order_status):
-    if order_status not in ["open", "closed", "in progress", "need info"]:
-        raise ValidationError(
-            gettext_lazy('%(order_status)s is wrong status'),
-            params={'order_status': order_status},
-        )
+        return f"{self.analyzer} с/н {self.serial_number} в {self.customer}"
 
 
 class Order(models.Model):
@@ -69,12 +59,16 @@ class Order(models.Model):
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
 
+    statuses = (("open", "открыта"),
+                ("closed", "закрыта"),
+                ("in progress", "в работе"),
+                ("need info", "нужна информация"))
+
     device = models.ForeignKey(DeviceInField, verbose_name="Оборудование", on_delete=models.RESTRICT)
-    customer = models.ForeignKey(Customer, verbose_name="Конечный пользователь", on_delete=models.RESTRICT)
     order_description = models.TextField(verbose_name="Описание")
     created_dt = models.DateTimeField(verbose_name="Создано", auto_now_add=True)
     last_updated_dt = models.DateTimeField(verbose_name="Последнее изменение", blank=True, null=True)
-    order_status = models.TextField(verbose_name="Статус заявки", validators=[status_validator])
+    order_status = models.TextField(verbose_name="Статус заявки", choices=statuses)
 
     def __str__(self):
         return f"Заявка №{self.id} для {self.device}"
